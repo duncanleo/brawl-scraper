@@ -10,7 +10,7 @@ type Player struct {
 	DeletedAt *time.Time `sql:"index" json:"-"`
 	Name      string     `gorm:"name" json:"name"`
 	NameColor string     `gorm:"name_color" json:"name_color"`
-	Tag       string     `gorm:"tag" json:"tag"`
+	Tag       string     `gorm:"tag" json:"-"`
 }
 
 // PlayerData represents the state of a player at a given time
