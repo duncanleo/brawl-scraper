@@ -11,7 +11,7 @@ var (
 	graphQLHandler = handler.New(&handler.Config{
 		Schema:   &schema,
 		Pretty:   true,
-		GraphiQL: true,
+		GraphiQL: gin.IsDebugging(),
 	})
 )
 
