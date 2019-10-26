@@ -12,6 +12,7 @@ func StartServer() {
 	r := gin.Default()
 	api := r.Group("/api")
 	{
+		api.Any("/graphql", graphQL)
 		api.GET("/players", players)
 		api.GET("/player_datas", playerDatas)
 	}
