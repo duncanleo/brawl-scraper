@@ -63,15 +63,34 @@ func Schema() graphql.Schema {
 				"datas": &graphql.Field{
 					Type:        graphql.NewList(playerDataType),
 					Description: "Get player datas by player id",
+					Args: graphql.FieldConfigArgument{
+						"desc": &graphql.ArgumentConfig{
+							Type: graphql.Boolean,
+						},
+						"limit": &graphql.ArgumentConfig{
+							Type: graphql.Int,
+						},
+					},
 					Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 						player, ok := p.Source.(model.Player)
+						limit, hasLimit := p.Args["limit"].(int)
+						desc, hasDesc := p.Args["desc"].(bool)
 						if ok {
 							var playerDatas []model.PlayerData
-							err := db.DB.
-								Where(model.PlayerData{PlayerID: player.ID}).
-								Find(&playerDatas).
-								Error
-							return playerDatas, err
+							var query = db.DB.
+								Where(model.PlayerData{PlayerID: player.ID})
+
+							if hasLimit {
+								query = query.Limit(limit)
+							}
+
+							if hasDesc && desc {
+								query = query.Order("created_at DESC")
+							}
+
+							query = query.Find(&playerDatas)
+
+							return playerDatas, query.Error
 						}
 						return nil, nil
 					},
